@@ -14,24 +14,24 @@ uv pip install --python .venv/bin/python -e .
 
 ## 推荐用法是在 tty7 单独开一个监看窗口
 
-在自己的 `tty7` 窗口里运行 `curve_it`，让训练继续在原来的进程或终端里跑。给工具传训练日志目录，它会在启动时选中最新的 `be2e_*.log`，每 10 秒更新曲线。下面这条命令可以在任意目录执行。
+在自己的 `tty7` 窗口里运行 `curve_it`，让训练继续在原来的进程或终端里跑。给工具传训练日志目录，它会在启动时选中最新的 `be2e_*.log`，每 5 秒更新曲线。下面这条命令可以在任意目录执行。
 
 ```bash
 /personal_fast_storage/curve_it/.venv/bin/curve_it \
-  /personal_fast_storage/BadmintonLab-Game/logs/console --watch 10
+  /personal_fast_storage/BadmintonLab-Game/logs/console --watch 5
 ```
 
 按 `q` 或 `Ctrl+C` 退出。训练换到新日志后，重新打开监看窗口即可选中新日志。如果 `tty7` 指本机 Linux 虚拟控制台，可以用 `tty` 确认设备名。Ubuntu 桌面通常可用 `Ctrl+Alt+F7` 切换，具体取决于系统配置。远程机器上也可以在 SSH 或已有的 tmux 窗口里执行同一条命令。
 
-![curve_it 终端监看实录](docs/screenshots/tty-live.png)
+![tty7 中的彩色终端曲线，显示 BE2E 步法训练第 143 轮](docs/screenshots/tty-live.png)
 
-上图是实际 BE2E 训练日志第 97 轮的输出，通过 Linux 终端模式的伪终端捕获。右边每行是该指标的历史走势，越靠右越新。Linux 虚拟控制台自动用 ASCII，宽终端显示中文点阵图。可用 `--ascii` 固定紧凑布局，或用 `--no-color` 关闭颜色。
+上图是在 `tty7` 中查看 BE2E 步法训练第 143 轮的实录。六张曲线显示训练走势，下方的表格方便对照不同轮次的指标。在 Linux 虚拟控制台上会自动使用 ASCII，也可用 `--ascii` 手动切换。`--no-color` 可以关闭颜色。
 
 ## 使用场景
 
 | 你在做什么 | 用法 |
 | --- | --- |
-| 训练时随时看进展 | 给出日志目录，添加 `--watch 10`。 |
+| 训练时随时看进展 | 给出日志目录，添加 `--watch 5`。 |
 | 只核对几条曲线 | 用 `--list` 查指标名，再用 `--metrics` 选择所需指标。 |
 | 复盘某一次训练或分享结果 | 给出具体日志文件，使用 `--html` 导出单页，或使用 `--png` 导出图像。 |
 
@@ -45,7 +45,7 @@ LOG=/personal_fast_storage/BadmintonLab-Game/logs/console
 .venv/bin/curve_it "$LOG" --png outputs/training.png
 ```
 
-![同一份 BE2E 训练日志的 HTML 报告截图](docs/screenshots/html-report.png)
+![BE2E 训练日志的 HTML 报告截图](docs/screenshots/html-report.png)
 
 上图是浏览器打开 HTML 导出的实际截屏。横轴是训练轮次，缺失指标显示 `--` 或「暂无数据」。终端默认显示原始值，`--term-smooth 0.6` 启用指数移动平均。HTML 和 PNG 保留原始曲线，`--smooth 0` 可关闭平滑。省略导出路径时，文件保存到当前工作目录。HTML 可离线打开。
 
