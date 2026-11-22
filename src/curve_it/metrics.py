@@ -66,36 +66,11 @@ def cn_title(key: str) -> str:
 
 
 def default_panels(log: ParsedLog) -> list[tuple[str, str]]:
-    """Select the 6 most informative (metric_key, Chinese display title) panels for the detected stage."""
-    if log.is_stage2():
-        keys = [
-            "Mean reward",
-            "Hit/legal_return_rate",
-            "Hit/contact_rate",
-            "Hit/serve_legal_rate",
-            "Hit/fall_rate",
-            "Hit/land_err_m",
-            "HitCur/receive_dist",
-            "Mean critic_ev loss",
-            "Mean mean_kl loss",
-        ]
-    elif any(key.startswith(("Loco/", "Subtask/agile/")) for key in log.series):
-        keys = [
-            "Loco/ready_rate",
-            "Loco/deadline_stable_rate",
-            "Episode_Termination/fall",
-            "Loco/track_kernel",
-            "Mean reward",
-            "Episode_Reward/progress_best",
-            "Episode_Reward/feet_air_time",
-            "Mean episode length",
-            "Diag/action_clip_rate",
-            "Mean mean_kl loss",
-        ]
-    else:
-        keys = ["Mean reward", "Mean episode length", "Episode_Termination/fall", "Steps/s"]
-    panels = [(k, cn_title(k)) for k in keys if k in log.series]
-    return panels[:6] if panels else [(k, cn_title(k)) for k in list(log.series)[:6]]
+    """Return six legacy panel pairs. The CLI uses the full dashboard preset."""
+    from .profiles import select_panels
+
+    _, panels = select_panels(log)
+    return [(panel.key, panel.title) for panel in panels[:6]]
 
 
 def diagnose_health(log: ParsedLog) -> list[str]:
